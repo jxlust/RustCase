@@ -1,20 +1,20 @@
-//引用/借用 指针 
-fn main() {
-    // a      <-        b   <-  c
-    // 10(address)     ptr      ptr
-    let a = 10;
-    let b = &a;
-    let c = &b;
-    
-    // **c = 100;//error
- 
-    println!("{}", a == **c);
-
-    // println!("a address:{:p}",&a);
-    // println!("b: {:p}", b);
+struct Person {
+    name: String,
+    last_name: String,
+    age: u8,
 }
 
-// fn test() {
-//     assert_eq!("1","11");
-// }
+fn main() {
+    let person = Person{
+        name: "xun liang".to_string(),//&str -> Strign
+        last_name: "jiang".to_string(),
+        age: 10
+    };
+    println!("{}-{}-{}",person.name,person.last_name,person.age)
+}
 
+fn box_use() {
+    let num = 32; //in stack
+    let num_2 = Box::new(100); //in heap by Box, use ptr(pointer)
+    println!("{}", num_2);
+}
