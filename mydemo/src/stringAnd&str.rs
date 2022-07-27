@@ -32,3 +32,15 @@ fn clone_message() {
     message.clear();
     println!("{},{}", message, message_2);
 }
+
+fn string_concat() {
+    let message = String::from("Hello");
+    let message_2 = " lala";
+    let message_3 = message + message_2;
+    let message_4: String = concat!("jxl", ", hhh").into();
+    let message_5 = concat!("x");
+
+    println!("{}", message_3); //Hello lala
+    println!("{}", message_4); //jxl,hhh
+    println!("{}", message_5); //x
+}

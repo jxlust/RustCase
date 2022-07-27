@@ -19,25 +19,26 @@ fn print_message(a: String) {
 
 
 /** move return use start  */
-fn main() {
+fn main2() {
     // let mut message = String::from("Hello");
     let message = String::from("Hello");
     let message = extend_message(message);
 
     //基本数据类型是copy
     let age = 30;
-    extend_age(age);
-    println!("{}", age);
-    
-    println!("{}", message);
+    let add_age = extend_age(age);
+    println!("{}", age);//30
+    println!("{}", add_age);//40
+    println!("{}", message);//Hello World!
 }
 
 fn extend_message(mut a: String) -> String {
     a.push_str(" World!");
     a
 }
-fn extend_age(a:i32){
+fn extend_age(mut a:i32){
     a += 10;
+    a
 }
 /** move return use end  */
 
