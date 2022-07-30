@@ -17,8 +17,18 @@ xxd -g1 main
 2. 所有权
 3. 生命周期
 
+## 学习目录learn
++ number.rs
++ stringAnd&str.rs
++ stackHeap.rs
++ funcTest.rs
++ valueMove.rs
++ reference.rs dereference.rs
++ struct.rs struct2.rs 
++ enums.rs
++ trait.rs trait2.rs
++ module.md 
 ## Game
-
 1. snake(贪吃蛇)
 2. maze(迷宫)
 3. catch the animal(抓住动物)
