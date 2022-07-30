@@ -1,5 +1,5 @@
 //trait narrowing
-
+//trait 组合模式类似 提取方法执行
 trait Log {
     fn display_info(&self);
     // fn alert_message();//挂在全局
