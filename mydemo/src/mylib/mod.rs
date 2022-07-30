@@ -1,6 +1,6 @@
 pub mod msg;
 use msg::MESSAGE;
-trait Log {
+pub trait Log {
     fn display_info(&self);
     // fn alert_message();//挂在全局
     fn alert_message(&self) {
@@ -21,9 +21,9 @@ impl Log for Animal {
         println!("display info:{}", self.0);
     }
 }
-struct Animal(String);
+pub struct Animal(pub String);
 
-struct City(String);
+pub struct City(pub String);
 
 pub struct Person {
     name: String, //fields
@@ -48,11 +48,12 @@ impl Person {
 }
 
 //use "val: &impl Log" is reference;
-fn log_info(val: impl Log) {
+pub fn log_info(val: impl Log) {
+    println!("msg:{}",MESSAGE);
     // val.alert_message();
     val.display_info();
 }
 
-fn log_info_dyn(val: &dyn Log) {
+pub fn log_info_dyn(val: &dyn Log) {
     val.display_info();
 }

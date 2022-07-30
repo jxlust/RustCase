@@ -1,1 +1,1 @@
-pub const MESSAGE: &str = "sss";
+pub const MESSAGE: &str = "STATIC MESSAGE";
