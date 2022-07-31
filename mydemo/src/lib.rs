@@ -1,11 +1,6 @@
-pub mod msg;
-use msg::MESSAGE;
-
 pub mod test_mod {
-    // pub fn test_print() {
-    //     println!("test print")
-    // }
-   pub mod top_level {
+
+    pub mod top_level {
         pub fn hi_there() {
             println!("hi there");
         }
@@ -29,7 +24,8 @@ impl Log for Person {
     fn display_info(&self) {
         //absolute path
         //crate(大木箱)  points to -> src/main.rs
-        crate::mylib::test_mod::top_level::low_level::hello_world();
+        // crate::test_mod::
+        crate::test_mod::top_level::low_level::hello_world();
 
         //relative path
         test_mod::top_level::hi_there();
@@ -69,15 +65,7 @@ impl Person {
             age,
         }
     }
-}
-
-//use "val: &impl Log" is reference;
-pub fn log_info(val: impl Log) {
-    println!("msg:{}", MESSAGE);
-    // val.alert_message();
-    val.display_info();
-}
-
-pub fn log_info_dyn(val: &dyn Log) {
-    val.display_info();
+    pub fn name(&self) -> &String {
+        &self.name
+    }
 }
