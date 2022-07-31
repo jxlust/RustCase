@@ -1,6 +1,6 @@
 ## 模块化 module
 
-1. super：上层模块 self：当前模块
+1. super：上层模块 self：当前模块。super类似：../, self类似：./
 2. 同一层级文件，利用 mod
 3. 同一层级文件和文件夹下，必须要有入口文件 mod.rs;
 4. path:
@@ -8,7 +8,7 @@
 - 绝对路径从 crate 根开始，以 crate 名或者字面值 crate 开头
 - 相对路径从当前模块开始，以 self、supper 或者当前模块的标识符开头。
 
-5. 与main.rs 同一层级文件：use mydemo::{Log,Person}; mydemo是package name in Cargo.toml;
+5. 与 main.rs 同一层级文件：use mydemo::{Log,Person}; mydemo 是 package name in Cargo.toml;
 
 
 ## 示例
@@ -108,20 +108,24 @@ use self::mylib::{Animal,xxx_fun,...};
 use std::array;
 ```
 
+- main.rs 代码
 
-
-+ main.rs 代码
 ```rust
 
+// mod lib;
+// use lib::{Log, Person};
+use mydemo::learning_rust::{Log, Person};
+fn main() {
+    let person = Person::new();
+    // person.name;
+    // person.display_info();
+    println!("name:{}", person.name());
+}
+
+
 mod mylib;
-// use self::mylib::log_info;
-// // use self::mylib::log_info_dyn;
-// use self::mylib::Animal;
-// use self::mylib::City;
-// use self::mylib::Person;
 use self::mylib::{Log, Person};
 // use self::mylib::test_mod;
-
 fn main() {
     let person = Person::new();
     person.display_info();
@@ -132,5 +136,88 @@ fn main() {
     // log_info_dyn(&animal);
 }
 
+
+```
+
+lib.rs
+
+```rust
+fn outsider() {
+    println!("outsider fn!");
+}
+pub mod learning_rust {
+    pub mod top_level {
+        pub fn hi_there() {
+            println!("hi there");
+        }
+        pub mod low_level {
+            pub fn hello_world() {
+                println!("hello world");
+            }
+        }
+    }
+
+    pub trait Log {
+        fn display_info(&self);
+        // fn alert_message();//挂在全局
+        fn alert_message(&self) {
+            println!("Default alert message!");
+        }
+    }
+
+    impl Log for Person {
+        fn display_info(&self) {
+            //absolute path
+            //crate(大木箱)  points to -> src/main.rs
+            // crate::test_mod::
+            crate::learning_rust::top_level::low_level::hello_world();
+
+            //relative path
+            top_level::hi_there();
+
+            //
+            super::outsider();
+
+
+            println!(
+                "display info:{} {} {} ",
+                self.name, self.last_name, self.age
+            );
+        }
+    }
+    impl Log for Animal {
+        fn display_info(&self) {
+            println!("display info:{}", self.0);
+        }
+    }
+    pub struct Animal(pub String);
+
+    pub struct City(pub String);
+
+    pub struct Person {
+        name: String, //fields
+        last_name: String,
+        age: u32,
+    }
+    impl Person {
+        pub fn new() -> Person {
+            Person {
+                name: "Default".to_string(),
+                last_name: "Default".to_string(),
+                age: 9,
+            }
+        }
+        pub fn from(name: String, last_name: String, age: u32) -> Person {
+            Person {
+                name,
+                last_name,
+                age,
+            }
+        }
+        pub fn name(&self) -> &String {
+            &self.name
+        }
+    }
+}
 
 ```
