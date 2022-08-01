@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- xxd -g1 test.wasm -->
+    <script>
+        let bufferString = '0061736D0100000001070160027F7F017F030201000707010373756D00000A09010700200020016A0B000A046E616D650203010000';
+        let array = [];
+        for (let i = 0, len = bufferString.length; i < len; i += 2) {
+            array.push(+`0x${bufferString[i]}${bufferString[i+1]}`)
+        }
+        console.log(array);
+        async function init(){
+            const byteArray = new Int8Array(array);
+            const wasm = await WebAssembly.instantiate(byteArray.buffer);
+            debugger;
+            const sumFunc = wasm.instance.exports.sum;
+            console.log(sumFunc(10,20))
+        }
+        init();
+    </script>
+</body>
+
+</html>
