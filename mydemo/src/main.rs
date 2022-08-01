@@ -1,5 +1,5 @@
 // mod lib;
-// use lib::{Log, Person};
+// use lib::learning_rust::{Log, Person};
 use mydemo::learning_rust::{Log, Person};
 fn main() {
     let person = Person::new();
