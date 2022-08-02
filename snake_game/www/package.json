@@ -11,12 +11,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "snake_game": "../pkg",
     "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0",
-    "snake_game": "../pkg"
+    "webpack-cli": "^4.10.0"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^11.0.0",
+    "ts-loader": "^9.3.1",
+    "typescript": "^4.7.4",
     "webpack-dev-server": "^4.9.3"
   }
 }
