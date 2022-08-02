@@ -83,3 +83,29 @@ extern "C" {
 //wasm-pack build --target web
 
 ```
+
+## Diretion
+
+```rust
+  //取下一列取模
+if self.snake.direction == Direction::Right {
+    let row_start = row * self.width;
+    let next_col = (snake_index + 1) % self.width;
+    self.snake.body[0].0 = row_start + next_col;
+}
+
+if self.snake.direction == Direction::Left {
+    let row_start = row * self.width;
+    let next_col = (snake_index - 1) % self.width;
+    self.snake.body[0].0 = row_start + next_col;
+}
+//取下一行取模
+if self.snake.direction == Direction::Up {
+    let next_row = (row - 1) % self.width;
+    self.snake.body[0].0 = next_row * self.width + col;
+}
+if self.snake.direction == Direction::Down {
+    let next_row = (row + 1) % self.width;
+    self.snake.body[0].0 = next_row * self.width + col;
+}
+```

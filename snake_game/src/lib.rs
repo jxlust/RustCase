@@ -22,7 +22,7 @@ impl Snake {
     fn new(spawn_index: usize) -> Snake {
         Snake {
             body: vec![SnakeCell(spawn_index)],
-            direction: Direction::Down,
+            direction: Direction::Left,
         }
     }
 }
@@ -49,33 +49,15 @@ impl World {
     }
     pub fn update(&mut self) {
         let snake_index = self.snake_header();
-        let row = snake_index / self.width;
-        let col = snake_index % self.width;
-
-        // 4 5 6 7
-        // 4 + ( x + 1) % width
-
-        //取下一列取模
-        if self.snake.direction == Direction::Right {
-            let row_start = row * self.width;
-            let next_col = (snake_index + 1) % self.width;
-            self.snake.body[0].0 = row_start + next_col;
-        }
-
-        if self.snake.direction == Direction::Left {
-            let row_start = row * self.width;
-            let next_col = (snake_index - 1) % self.width;
-            self.snake.body[0].0 = row_start + next_col;
-        }
-
-        //取下一行取模
-        if self.snake.direction == Direction::Up {
-            let next_row = (row - 1) % self.width;
-            self.snake.body[0].0 = next_row * self.width + col;
-        }
-        if self.snake.direction == Direction::Down {
-            let next_row = (row + 1) % self.width;
-            self.snake.body[0].0 = next_row * self.width + col;
-        }
+        let (row, col) = (snake_index / self.width, snake_index % self.width);
+        //左右方向：取下一列(+1/-1)取模
+        //上下方向：取下一行(+1/-1)取模
+        let (row, col) = match self.snake.direction {
+            Direction::Right => (row, (snake_index + 1) % self.width),
+            Direction::Left => (row, (snake_index - 1) % self.width),
+            Direction::Up => ((row - 1) % self.width, col),
+            Direction::Down => ((row + 1) % self.width, col),
+        };
+        self.snake.body[0].0 = row * self.width + col;
     }
 }
