@@ -1,6 +1,6 @@
-import init, { World } from "snake_game";
+import init, { World, Direction } from "snake_game";
 
-init().then((_) => {
+init().then((wasm) => {
   const INTERVAL_TIME = 1000 / 10;
   const WORLD_WIDTH = 16;
   const CELL_SIZE = 20; //cell size 10
@@ -13,8 +13,45 @@ init().then((_) => {
   const canvas = <HTMLCanvasElement>document.getElementById("snake-canvas");
   canvas.width = CELL_SIZE * worldWidth;
   canvas.height = CELL_SIZE * worldWidth;
-
   const ctx = canvas.getContext("2d");
+
+  const snakeCellsPtr = world.snake_cells();
+  const snakeLength = world.snake_length();
+
+  const snakeCells = new Int32Array(
+    wasm.memory.buffer,
+    snakeCellsPtr,
+    snakeLength
+  ); //usize = 4 bytes  = 4 * 8
+
+  world.change_ptr();
+
+  const snakeCells2 = new Int32Array(
+    wasm.memory.buffer,
+    snakeCellsPtr,
+    snakeLength
+  ); //usize = 4 bytes  = 4 * 8
+
+  debugger;
+
+  document.addEventListener("keydown", (e) => {
+    console.log(e.code);
+    switch (e.code) {
+      case "ArrowUp":
+        world.change_snake_dir(Direction.Up);
+        break;
+      case "ArrowDown":
+        world.change_snake_dir(Direction.Down);
+        break;
+      case "ArrowRight":
+        world.change_snake_dir(Direction.Right);
+        break;
+      case "ArrowLeft":
+        world.change_snake_dir(Direction.Left);
+        break;
+    }
+  });
+
   function drawWorld() {
     ctx.beginPath();
     // let colorIndex = ((Math.random() * 3 | 0));
@@ -32,6 +69,7 @@ init().then((_) => {
     }
     ctx.stroke();
   }
+
   function drawSnake() {
     const snakeIndex = world.snake_header();
     const row = (snakeIndex / worldWidth) | 0;
@@ -46,12 +84,14 @@ init().then((_) => {
 
     world.update();
   }
+
   // debugger;
   function updatedView() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawWorld();
     drawSnake();
   }
+
   function loopStart() {
     let startTime: number;
     function loopCallback(timestamp: number) {
@@ -68,5 +108,5 @@ init().then((_) => {
     window.requestAnimationFrame(loopCallback);
   }
 
-  loopStart();
+  // loopStart();
 });

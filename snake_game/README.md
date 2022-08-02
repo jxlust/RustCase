@@ -109,3 +109,14 @@ if self.snake.direction == Direction::Down {
     self.snake.body[0].0 = next_row * self.width + col;
 }
 ```
+
+## ptr updated attention
+
+```rust
+pub fn change_ptr(&mut self) {
+  self.snake.body = vec![SnakeCell(2048)];
+}
+```
+```js
+
+```
