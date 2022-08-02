@@ -1,7 +1,7 @@
 import init, { World } from "snake_game";
 
 init().then((_) => {
-  const INTERVAL_TIME = 1000 * 10;
+  const INTERVAL_TIME = 1000 / 10;
   const WORLD_WIDTH = 16;
   const CELL_SIZE = 20; //cell size 10
 

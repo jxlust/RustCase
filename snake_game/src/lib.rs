@@ -7,14 +7,22 @@ static ALLOC: WeeAlloc = WeeAlloc::INIT;
 
 struct SnakeCell(usize);
 //vec
-//
+#[derive(PartialEq)]
+pub enum Direction {
+    Up,
+    Right,
+    Down,
+    Left,
+}
 pub struct Snake {
     body: Vec<SnakeCell>,
+    direction: Direction,
 }
 impl Snake {
     fn new(spawn_index: usize) -> Snake {
         Snake {
             body: vec![SnakeCell(spawn_index)],
+            direction: Direction::Down,
         }
     }
 }
@@ -41,6 +49,33 @@ impl World {
     }
     pub fn update(&mut self) {
         let snake_index = self.snake_header();
-        self.snake.body[0].0 = (snake_index + 1) % self.size;
+        let row = snake_index / self.width;
+        let col = snake_index % self.width;
+
+        // 4 5 6 7
+        // 4 + ( x + 1) % width
+
+        //取下一列取模
+        if self.snake.direction == Direction::Right {
+            let row_start = row * self.width;
+            let next_col = (snake_index + 1) % self.width;
+            self.snake.body[0].0 = row_start + next_col;
+        }
+
+        if self.snake.direction == Direction::Left {
+            let row_start = row * self.width;
+            let next_col = (snake_index - 1) % self.width;
+            self.snake.body[0].0 = row_start + next_col;
+        }
+
+        //取下一行取模
+        if self.snake.direction == Direction::Up {
+            let next_row = (row - 1) % self.width;
+            self.snake.body[0].0 = next_row * self.width + col;
+        }
+        if self.snake.direction == Direction::Down {
+            let next_row = (row + 1) % self.width;
+            self.snake.body[0].0 = next_row * self.width + col;
+        }
     }
 }
