@@ -6,7 +6,7 @@ use wee_alloc::WeeAlloc;
 static ALLOC: WeeAlloc = WeeAlloc::INIT;
 #[derive(Clone)]
 pub struct SnakeCell(usize);
-// #[derive(PartialEq)]
+#[derive(PartialEq)]
 #[wasm_bindgen]
 pub enum Direction {
     Up,
@@ -78,7 +78,15 @@ impl World {
     }
 
     pub fn change_snake_dir(&mut self, dir: Direction) {
-        self.snake.direction = dir;
+        let is_can = match self.snake.direction {
+            Direction::Right => dir != Direction::Left,
+            Direction::Left => dir != Direction::Right,
+            Direction::Up => dir != Direction::Down,
+            Direction::Down => dir != Direction::Up,
+        };
+        if is_can {
+            self.snake.direction = dir;
+        }
     }
 
     pub fn step(&mut self) {
@@ -87,7 +95,7 @@ impl World {
         self.snake.body[0] = next_cell;
         let len = self.snake_length();
         for i in 1..len {
-            self.snake.body[i] =  SnakeCell(temp[i - 1].0);
+            self.snake.body[i] = SnakeCell(temp[i - 1].0);
         }
     }
 
