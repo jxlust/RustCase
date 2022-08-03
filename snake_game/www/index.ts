@@ -1,7 +1,7 @@
 import init, { World, Direction } from "snake_game";
 
 init().then((wasm) => {
-  const INTERVAL_TIME = 1000 / 4;
+  const INTERVAL_TIME = 1000 / 9;
   const WORLD_WIDTH = 16;
   const CELL_SIZE = 20; //cell size 10
 

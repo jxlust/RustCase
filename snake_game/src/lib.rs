@@ -4,6 +4,7 @@ use wee_alloc::WeeAlloc;
 // Use `wee_alloc` as the global allocator.
 #[global_allocator]
 static ALLOC: WeeAlloc = WeeAlloc::INIT;
+#[derive(Clone)]
 pub struct SnakeCell(usize);
 // #[derive(PartialEq)]
 #[wasm_bindgen]
@@ -13,6 +14,7 @@ pub enum Direction {
     Down,
     Left,
 }
+
 pub struct Snake {
     //vec
     body: Vec<SnakeCell>,
@@ -80,8 +82,13 @@ impl World {
     }
 
     pub fn step(&mut self) {
+        let temp = self.snake.body.clone();
         let next_cell = self.gen_next_cell();
         self.snake.body[0] = next_cell;
+        let len = self.snake_length();
+        for i in 1..len {
+            self.snake.body[i] =  SnakeCell(temp[i - 1].0);
+        }
     }
 
     fn gen_next_cell(&self) -> SnakeCell {
@@ -125,6 +132,7 @@ impl World {
             }
         };
     }
+
     // fn set_snake_header(&mut self, idx: usize) {
     //     self.snake.body[0].0 = idx;
     // }
