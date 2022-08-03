@@ -109,6 +109,24 @@ if self.snake.direction == Direction::Down {
     self.snake.body[0].0 = next_row * self.width + col;
 }
 ```
+refactor 重构：
+```rust
+pub fn update(&mut self) {
+    let snake_index = self.snake_header();
+    let (row, col) = self.index_to_cell(snake_index);
+    //左右方向：取下一列(+1/-1)取模
+    //上下方向：取下一行(+1/-1)取模
+    let (row, col) = match self.snake.direction {
+        Direction::Right => (row, (snake_index + 1) % self.width),
+        Direction::Left => (row, (snake_index - 1) % self.width),
+        Direction::Up => ((row - 1) % self.width, col),
+        Direction::Down => ((row + 1) % self.width, col),
+    };
+    let idx = self.cell_to_index(row, col);
+    self.set_snake_header(idx);
+}
+
+```
 
 ## ptr updated attention
 
@@ -117,6 +135,7 @@ pub fn change_ptr(&mut self) {
   self.snake.body = vec![SnakeCell(2048)];
 }
 ```
+
 ```js
 
 ```

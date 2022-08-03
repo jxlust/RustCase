@@ -1,7 +1,7 @@
 import init, { World, Direction } from "snake_game";
 
 init().then((wasm) => {
-  const INTERVAL_TIME = 1000 / 10;
+  const INTERVAL_TIME = 1000 / 4;
   const WORLD_WIDTH = 16;
   const CELL_SIZE = 20; //cell size 10
 
@@ -15,25 +15,7 @@ init().then((wasm) => {
   canvas.height = CELL_SIZE * worldWidth;
   const ctx = canvas.getContext("2d");
 
-  const snakeCellsPtr = world.snake_cells();
-  const snakeLength = world.snake_length();
-
-  const snakeCells = new Int32Array(
-    wasm.memory.buffer,
-    snakeCellsPtr,
-    snakeLength
-  ); //usize = 4 bytes  = 4 * 8
-
-  world.change_ptr();
-
-  const snakeCells2 = new Int32Array(
-    wasm.memory.buffer,
-    snakeCellsPtr,
-    snakeLength
-  ); //usize = 4 bytes  = 4 * 8
-
-  debugger;
-
+  // debugger;
   document.addEventListener("keydown", (e) => {
     console.log(e.code);
     switch (e.code) {
@@ -54,7 +36,6 @@ init().then((wasm) => {
 
   function drawWorld() {
     ctx.beginPath();
-    // let colorIndex = ((Math.random() * 3 | 0));
     // ctx.strokeStyle = ["blue","red","yellow"].at(colorIndex);
     ctx.strokeStyle = "skyblue";
     ctx.lineWidth = 1;
@@ -71,18 +52,27 @@ init().then((wasm) => {
   }
 
   function drawSnake() {
-    const snakeIndex = world.snake_header();
-    const row = (snakeIndex / worldWidth) | 0;
-    const col = snakeIndex % worldWidth;
-    console.log(row, col);
+    const snakeCellsPtr = world.snake_cells();
+    const snakeLength = world.snake_length();
 
-    ctx.beginPath();
-    // ctx.fillStyle = "yellow";
-    ctx.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-    ctx.stroke();
-    console.log("end.");
+    const snakeCells = new Int32Array(
+      wasm.memory.buffer,
+      snakeCellsPtr,
+      snakeLength
+    ); //usize = 4 bytes  = 4 * 8
 
-    world.update();
+    snakeCells.forEach((cellIdx, i) => {
+      // const snakeIndex = world.snake_header();
+      const row = (cellIdx / worldWidth) | 0;
+      const col = cellIdx % worldWidth;
+      console.log(row, col);
+      ctx.beginPath();
+      ctx.fillStyle = i === 0 ? "#a8f8f8" : "#000000";
+      ctx.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      ctx.stroke();
+    });
+
+    world.step();
   }
 
   // debugger;
@@ -108,5 +98,5 @@ init().then((wasm) => {
     window.requestAnimationFrame(loopCallback);
   }
 
-  // loopStart();
+  loopStart();
 });
