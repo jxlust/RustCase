@@ -84,6 +84,9 @@ impl World {
             Direction::Up => dir != Direction::Down,
             Direction::Down => dir != Direction::Up,
         };
+        //func2:
+        //next_cell()
+        //self.snake.body[1] == next_cell, explain is cant move
         if is_can {
             self.snake.direction = dir;
         }
