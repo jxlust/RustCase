@@ -32,3 +32,10 @@ let mod_a = (a.wrapping_sub(2)) % 8; // 7
 ```
 >这里说明一下，因为无符号溢出了就是由负数的补码存储。
 >计算机负数也都是存的补码形式，可以参考网站或者我的[二进制相关知识](https://github.com/jxlust/WebHtml/blob/main/%E7%B3%BB%E7%BB%9F%E6%93%8D%E4%BD%9C/%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86.md)
+```rust
+let a:u32 = 1;
+let b:u32 = 4;
+// let c:u32 = a - b; // 4_294_967_293
+let c:u32 = a.wrapping_sub(b) // 4_294_967_293
+// -3的补码 2^32 - 3，在32位里面是这个
+```
