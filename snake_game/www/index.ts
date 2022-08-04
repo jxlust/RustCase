@@ -62,30 +62,30 @@ init().then((wasm) => {
       snakeLength
     ); //usize = 4 bytes  = 4 * 8
 
+    // const snakeIndex = world.snake_header();
     snakeCells.forEach((cellIdx, i) => {
-      // const snakeIndex = world.snake_header();
-      const row = (cellIdx / worldWidth) | 0;
-      const col = cellIdx % worldWidth;
-      console.log(row, col);
-      ctx.beginPath();
-      ctx.fillStyle = i === 0 ? "#a8f8f8" : "#000000";
-      ctx.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-      ctx.stroke();
+      let color = i === 0 ? "#a8f8f8" : "#000000";
+      ctxFillCell(cellIdx, color);
     });
 
+    //fill header again
+    let headerIndex = snakeCells[0];
+    ctxFillCell(headerIndex, "#a8f8f8");
     world.step();
+  }
+
+  function ctxFillCell(index: number, color?: string) {
+    const row = (index / worldWidth) | 0;
+    const col = index % worldWidth;
+    ctx.beginPath();
+    color && (ctx.fillStyle = color);
+    ctx.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+    ctx.stroke();
   }
 
   function drawFoodCell() {
     let foodIndex = world.food_cell();
-
-    const row = (foodIndex / worldWidth) | 0;
-    const col = foodIndex % worldWidth;
-
-    ctx.beginPath();
-    ctx.fillStyle = "#ff0000";
-    ctx.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
-    ctx.stroke();
+    ctxFillCell(foodIndex, "#ff0000");
   }
 
   // debugger;

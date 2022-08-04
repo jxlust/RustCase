@@ -134,6 +134,14 @@ impl World {
                 self.snake.body[0] = self.gen_next_cell(&self.snake.direction);
             }
         }
+        //todo: eat food
+        if self.snake_header() == self.food_cell {
+            //length+1,push a cell,cell in snake
+            //eg: 0 < 1 < 2 < 1
+            // x < 0 < 1 < 2 the last is not important
+            //长度+1，push进去的cell理论上在蛇内部的数值就行，只是为了新增一个长度
+            self.snake.body.push(SnakeCell(self.snake.body[1].0));
+        }
 
         let len = self.snake_length();
         for i in 1..len {
