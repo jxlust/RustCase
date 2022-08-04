@@ -4,10 +4,16 @@ use wee_alloc::WeeAlloc;
 // Use `wee_alloc` as the global allocator.
 #[global_allocator]
 static ALLOC: WeeAlloc = WeeAlloc::INIT;
-#[derive(Clone)]
+
+#[wasm_bindgen(module = "/www/utils/rng.js")]
+extern "C" {
+    fn rng(n: usize) -> usize;
+}
+#[derive(Clone, Copy, PartialEq)]
 pub struct SnakeCell(usize);
-#[derive(PartialEq)]
+
 #[wasm_bindgen]
+#[derive(PartialEq)]
 pub enum Direction {
     Up,
     Right,
@@ -38,19 +44,37 @@ pub struct World {
     width: usize,
     snake: Snake,
     size: usize,
+    next_cell: Option<SnakeCell>,
+    food_cell: usize,
 }
 #[wasm_bindgen]
 impl World {
     pub fn new(width: usize, idx: usize) -> World {
+        let size = width * width;
+        let snake = Snake::new(idx, 3);
+        let mut food_cell;
+        //food may be appear on snakes, then loop fix it
+        loop {
+            food_cell = rng(size);
+            if !snake.body.contains(&SnakeCell(food_cell)) {
+                break;
+            }
+        }
         World {
             width,
-            size: width * width,
-            snake: Snake::new(idx, 3),
+            size,
+            snake,
+            next_cell: None,
+            food_cell,
         }
     }
 
     pub fn width(&self) -> usize {
         self.width
+    }
+
+    pub fn food_cell(&self) -> usize {
+        self.food_cell
     }
 
     //cannot return a reference to JS because of borring rules
@@ -78,34 +102,49 @@ impl World {
     }
 
     pub fn change_snake_dir(&mut self, dir: Direction) {
-        let is_can = match self.snake.direction {
-            Direction::Right => dir != Direction::Left,
-            Direction::Left => dir != Direction::Right,
-            Direction::Up => dir != Direction::Down,
-            Direction::Down => dir != Direction::Up,
-        };
-        //func2:
-        //next_cell()
+        // let is_can = match self.snake.direction {
+        //     Direction::Right => dir != Direction::Left,
+        //     Direction::Left => dir != Direction::Right,
+        //     Direction::Up => dir != Direction::Down,
+        //     Direction::Down => dir != Direction::Up,
+        // };
+        // if is_can {
+        //     self.snake.direction = dir;
+        // }
+
+        //fun 2: next_cell()
         //self.snake.body[1] == next_cell, explain is cant move
-        if is_can {
-            self.snake.direction = dir;
+        let next_cell = self.gen_next_cell(&dir);
+        if self.snake.body[1].0 == next_cell.0 {
+            return;
         }
+        //Option::Some
+        self.next_cell = Some(next_cell);
+        self.snake.direction = dir;
     }
 
     pub fn step(&mut self) {
         let temp = self.snake.body.clone();
-        let next_cell = self.gen_next_cell();
-        self.snake.body[0] = next_cell;
+        match self.next_cell {
+            Some(cell) => {
+                self.snake.body[0] = cell;
+                self.next_cell = None;
+            }
+            None => {
+                self.snake.body[0] = self.gen_next_cell(&self.snake.direction);
+            }
+        }
+
         let len = self.snake_length();
         for i in 1..len {
             self.snake.body[i] = SnakeCell(temp[i - 1].0);
         }
     }
 
-    fn gen_next_cell(&self) -> SnakeCell {
+    fn gen_next_cell(&self, direction: &Direction) -> SnakeCell {
         let snake_index = self.snake_header();
         let row = snake_index / self.width;
-        return match self.snake.direction {
+        return match direction {
             Direction::Right => {
                 //last_col
                 let threshold = (row + 1) * self.width;

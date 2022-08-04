@@ -1,11 +1,12 @@
 import init, { World, Direction } from "snake_game";
-
+import { rng } from "./utils/rng";
 init().then((wasm) => {
   const INTERVAL_TIME = 1000 / 9;
   const WORLD_WIDTH = 16;
   const CELL_SIZE = 20; //cell size 10
 
-  const snakeSpawnIndex = Date.now() % (WORLD_WIDTH * WORLD_WIDTH);
+  // const snakeSpawnIndex = Date.now() % (WORLD_WIDTH * WORLD_WIDTH);
+  const snakeSpawnIndex = rng(WORLD_WIDTH * WORLD_WIDTH);
   const world = World.new(WORLD_WIDTH, snakeSpawnIndex);
 
   const worldWidth = world.width();
@@ -75,11 +76,24 @@ init().then((wasm) => {
     world.step();
   }
 
+  function drawFoodCell() {
+    let foodIndex = world.food_cell();
+
+    const row = (foodIndex / worldWidth) | 0;
+    const col = foodIndex % worldWidth;
+
+    ctx.beginPath();
+    ctx.fillStyle = "#ff0000";
+    ctx.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+    ctx.stroke();
+  }
+
   // debugger;
   function updatedView() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawWorld();
     drawSnake();
+    drawFoodCell();
   }
 
   function loopStart() {
