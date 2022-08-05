@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .canvas-wrap {
+            /* background-color: #f8f8f8; */
+            background: url("./img/bg.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+            width: 60%;
+            height: 60%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            /* width: 500px;
+            height: 500px; */
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-crisp-edges;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        #myImg {
+            /* display: none; */
+        }
+
+        .show-wrap {
+            width: 300px;
+            display: flex;
+            margin: 5px 0;
+            justify-content: space-around;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="canvas-wrap">
+        <canvas id="myCanvas"></canvas>
+    </div>
+    <div class="show-wrap">
+        <span>步数：<span id="stepId">0</span></span>
+        <button id="restartId">Rest</button>
+    </div>
+
+    <div class="show-wrap" id="resultId">
+    </div>
+    <script src="./bootstrap.js"></script>
+</body>
+
+</html>
