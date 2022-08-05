@@ -13,11 +13,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
         }
 
         .canvas-wrap {
-            background-color: #f8f8f8;
-            background: url("https://img2.baidu.com/it/u=1572613686,938558453&fm=253&fmt=auto&app=120&f=JPEG?w=640&h=400");
+            /* background-color: #f8f8f8; */
+            background: url("./img/bg.png");
+            background-size: cover;
+            background-repeat: no-repeat;
             width: 60%;
             height: 60%;
             display: flex;
@@ -38,6 +41,13 @@
         #myImg {
             /* display: none; */
         }
+
+        .show-wrap {
+            width: 300px;
+            display: flex;
+            margin: 5px 0;
+            justify-content: space-around;
+        }
     </style>
 </head>
 
@@ -45,6 +55,13 @@
 <body>
     <div class="canvas-wrap">
         <canvas id="myCanvas"></canvas>
+    </div>
+    <div class="show-wrap">
+        <span>步数：<span id="stepId">0</span></span>
+        <button id="restartId">Rest</button>
+    </div>
+
+    <div class="show-wrap" id="resultId">
     </div>
     <script src="./bootstrap.js"></script>
 </body>
