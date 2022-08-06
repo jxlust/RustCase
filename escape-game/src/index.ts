@@ -2,6 +2,11 @@ enum FillStatus {
   None = 0,
   Fill = 1,
 }
+class TreeNode {
+  public x: number;
+  public y: number;
+  public pre: TreeNode;
+}
 class CircleCell {
   public X: number;
   public Y: number;
@@ -228,10 +233,11 @@ function checkIsOnWallEdge(idx: number) {
 //animal 6 dir can go
 function animalStep() {
   //check is can skip
-  let isCanSkip = checkCanSkip(animalIdx);
+  let isCanSkip = dfsCheckCanSkip(animalIdx);
   if (isCanSkip) {
     // change animalIdx
     let nbs = getNeighbors(animalIdx);
+
     let nextId = nbs[rng(nbs.length)];
     drawAnimal(nextId);
     //check animal is in the wall edge 边缘
@@ -314,7 +320,14 @@ function getNeighbors(idx: number) {
   return neighbors;
 }
 
-function checkCanSkip(curIdx: number) {
+function bfsCheckPath(curIdx: number) {
+  //bfs 可以求到最短路径
+  let queue: number[] = [curIdx];
+  let visited = new Set();
+  visited.add(curIdx);
+  let nextId = -1;
+}
+function dfsCheckCanSkip(curIdx: number) {
   //dfs stack
   let stack: number[] = [curIdx];
   let visited = new Set();

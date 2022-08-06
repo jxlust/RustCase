@@ -61,7 +61,7 @@ init().then((wasm) => {
       snakeCellsPtr,
       snakeLength
     ); //usize = 4 bytes  = 4 * 8
-
+    debugger;
     // const snakeIndex = world.snake_header();
     snakeCells.forEach((cellIdx, i) => {
       let color = i === 0 ? "#a8f8f8" : "#000000";
