@@ -3,9 +3,16 @@ enum FillStatus {
   Fill = 1,
 }
 class TreeNode {
-  public x: number;
-  public y: number;
+  // public x?: number;
+  // public y?: number;
+  public p: number;
   public pre: TreeNode;
+  constructor(p: number, pre: TreeNode) {
+    // this.x = x;
+    // this.y = y;
+    this.p = p;
+    this.pre = pre;
+  }
 }
 class CircleCell {
   public X: number;
@@ -233,12 +240,13 @@ function checkIsOnWallEdge(idx: number) {
 //animal 6 dir can go
 function animalStep() {
   //check is can skip
-  let isCanSkip = dfsCheckCanSkip(animalIdx);
-  if (isCanSkip) {
+  // let isCanSkip = dfsCheckCanSkip(animalIdx);
+  let lastNode = bfsCheckPath(animalIdx);
+  if (lastNode) {
     // change animalIdx
-    let nbs = getNeighbors(animalIdx);
-
-    let nextId = nbs[rng(nbs.length)];
+    // let nbs = getNeighbors(animalIdx);
+    // let nextId = nbs[rng(nbs.length)];
+    let nextId = getOptimalPathFirstNode(lastNode);
     drawAnimal(nextId);
     //check animal is in the wall edge 边缘
     if (checkIsOnWallEdge(nextId)) {
@@ -319,13 +327,58 @@ function getNeighbors(idx: number) {
   }
   return neighbors;
 }
+function getOptimalPathFirstNode(node: TreeNode): number {
+  let path = [];
+  let optimalIdx = -1;
+  while (node) {
+    if (!!node.pre && !node.pre.pre) {
+      optimalIdx = node.p;
+    }
+    path.unshift(node.p);
+    node = node.pre;
+  }
+  console.log("path:", path);
+  return optimalIdx;
+}
 
 function bfsCheckPath(curIdx: number) {
   //bfs 可以求到最短路径
-  let queue: number[] = [curIdx];
+  let rootNode = new TreeNode(curIdx, null);
+  let queue: TreeNode[] = [rootNode];
   let visited = new Set();
   visited.add(curIdx);
-  let nextId = -1;
+  let step = 0; //记录bfs step
+  let lastNode = null; //last node
+  while (queue.length) {
+    for (let i = queue.length - 1; i >= 0; --i) {
+      let curNode = queue.shift();
+      let curP = curNode.p;
+
+      let y = (curP / WIDTH) | 0;
+      let x = curP % WIDTH;
+      //is in the wall edge 边缘
+      if (x === 0 || y === 0 || x === WIDTH - 1 || y === WIDTH - 1) {
+        lastNode = curNode;
+        console.log("step:", step);
+        console.log("last node:", lastNode);
+        return lastNode;
+      }
+
+      //一层一层bfs
+      let neighbors: number[] = getNeighbors(curP);
+      for (let nbPoint of neighbors) {
+        if (!visited.has(nbPoint)) {
+          let node = new TreeNode(nbPoint, curNode);
+          queue.push(node);
+          visited.add(nbPoint);
+        }
+      }
+    }
+    step++;
+  }
+  console.log("step:", step);
+  console.log("last node:", lastNode);
+  return lastNode;
 }
 function dfsCheckCanSkip(curIdx: number) {
   //dfs stack
