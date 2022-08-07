@@ -28,6 +28,25 @@
             image-rendering: pixelated;
             image-rendering: crisp-edges;
         }
+
+        .opt-wrapper {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-text {
+            display: flex;
+            align-items: center;
+        }
+
+        .status-text span:first-of-type {
+            font-weight: bold;
+        }
+
+        #playId {
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -35,7 +54,14 @@
 <body>
     <div class="snake-wrapper">
         <canvas id="snake-canvas"></canvas>
+
+
+        <div class="opt-wrapper">
+            <div class="status-text"> <span>Status:</span> <span id="statusId">None</span></div>
+            <button id="playId">play</button>
+        </div>
     </div>
+
     <script src="./bootstrap.js"></script>
 </body>
 

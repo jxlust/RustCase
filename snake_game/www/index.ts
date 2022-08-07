@@ -1,8 +1,8 @@
 import init, { World, Direction } from "snake_game";
 import { rng } from "./utils/rng";
 init().then((wasm) => {
-  const INTERVAL_TIME = 1000 / 9;
-  const WORLD_WIDTH = 16;
+  const INTERVAL_TIME = 1000 / 4;
+  const WORLD_WIDTH = 15;
   const CELL_SIZE = 20; //cell size 10
 
   // const snakeSpawnIndex = Date.now() % (WORLD_WIDTH * WORLD_WIDTH);
@@ -10,6 +10,8 @@ init().then((wasm) => {
   const world = World.new(WORLD_WIDTH, snakeSpawnIndex);
 
   const worldWidth = world.width();
+
+  const playIdDom = document.getElementById("playId");
 
   const canvas = <HTMLCanvasElement>document.getElementById("snake-canvas");
   canvas.width = CELL_SIZE * worldWidth;
@@ -32,6 +34,18 @@ init().then((wasm) => {
       case "ArrowLeft":
         world.change_snake_dir(Direction.Left);
         break;
+    }
+  });
+
+  playIdDom.addEventListener("click", (_) => {
+    let gameStatus = world.game_status();
+    if (!gameStatus) {
+      world.start_game();
+      loopStart();
+
+      playIdDom.innerText = "reload";
+    } else {
+      window.location.reload();
     }
   });
 
@@ -61,7 +75,7 @@ init().then((wasm) => {
       snakeCellsPtr,
       snakeLength
     ); //usize = 4 bytes  = 4 * 8
-    debugger;
+    // debugger;
     // const snakeIndex = world.snake_header();
     snakeCells.forEach((cellIdx, i) => {
       let color = i === 0 ? "#a8f8f8" : "#000000";
@@ -86,6 +100,9 @@ init().then((wasm) => {
   function drawFoodCell() {
     let foodIndex = world.food_cell();
     ctxFillCell(foodIndex, "#ff0000");
+    if (foodIndex === 1000) {
+      console.error("Get all!");
+    }
   }
 
   // debugger;
@@ -112,5 +129,5 @@ init().then((wasm) => {
     window.requestAnimationFrame(loopCallback);
   }
 
-  loopStart();
+  updatedView();
 });

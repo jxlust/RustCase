@@ -20,6 +20,13 @@ pub enum Direction {
     Down,
     Left,
 }
+#[wasm_bindgen]
+#[derive(Clone, Copy)]
+pub enum GameStatus {
+    Won,
+    Lost,
+    Played,
+}
 
 pub struct Snake {
     //vec
@@ -46,6 +53,7 @@ pub struct World {
     size: usize,
     next_cell: Option<SnakeCell>,
     food_cell: usize,
+    status: Option<GameStatus>,
 }
 #[wasm_bindgen]
 impl World {
@@ -59,6 +67,7 @@ impl World {
             food_cell: World::gen_food_cell(size, &snake.body),
             snake,
             next_cell: None,
+            status: None,
         }
     }
     fn gen_food_cell(max: usize, body: &Vec<SnakeCell>) -> usize {
@@ -76,7 +85,9 @@ impl World {
     pub fn width(&self) -> usize {
         self.width
     }
-
+    pub fn game_status(&self) -> Option<GameStatus> {
+        self.status
+    }
     pub fn food_cell(&self) -> usize {
         self.food_cell
     }
@@ -126,32 +137,46 @@ impl World {
         self.next_cell = Some(next_cell);
         self.snake.direction = dir;
     }
+    pub fn start_game(&mut self) {
+        self.status = Option::Some(GameStatus::Played);
+    }
 
     pub fn step(&mut self) {
-        let temp = self.snake.body.clone();
-        match self.next_cell {
-            Some(cell) => {
-                self.snake.body[0] = cell;
-                self.next_cell = None;
-            }
-            None => {
-                self.snake.body[0] = self.gen_next_cell(&self.snake.direction);
-            }
-        }
-        //todo: eat food
-        if self.snake_header() == self.food_cell {
-            //length+1,push a cell,cell in snake
-            //eg: 0 < 1 < 2 < 1
-            // x < 0 < 1 < 2 the last is not important
-            //长度+1，push进去的cell理论上在蛇内部的数值就行，只是为了新增一个长度
-            self.snake.body.push(SnakeCell(self.snake.body[1].0));
-            //update food cell
-            self.food_cell = World::gen_food_cell(self.size, &self.snake.body);
-        }
+        match self.status {
+            Some(GameStatus::Played) => {
+                let temp = self.snake.body.clone();
+                match self.next_cell {
+                    Some(cell) => {
+                        self.snake.body[0] = cell;
+                        self.next_cell = None;
+                    }
+                    None => {
+                        self.snake.body[0] = self.gen_next_cell(&self.snake.direction);
+                    }
+                }
+                //todo: eat food
+                if self.snake_header() == self.food_cell {
+                    if self.snake_length() < self.size {
+                        //length+1,push a cell,cell in snake
+                        //eg: 0 < 1 < 2 < 1
+                        // x < 0 < 1 < 2 the last is not important
+                        //长度+1，push进去的cell理论上在蛇内部的数值就行，只是为了新增一个长度
+                        self.snake.body.push(SnakeCell(self.snake.body[1].0));
+                        //update food cell
+                        self.food_cell = World::gen_food_cell(self.size, &self.snake.body);
+                    } else {
+                        self.food_cell = 1000; //test
+                                               // self.food_cell = self.size + 10;
+                    }
+                }
 
-        let len = self.snake_length();
-        for i in 1..len {
-            self.snake.body[i] = SnakeCell(temp[i - 1].0);
+                let len = self.snake_length();
+                for i in 1..len {
+                    self.snake.body[i] = SnakeCell(temp[i - 1].0);
+                }
+            }
+            //else to do nothing
+            _ => {}
         }
     }
 
