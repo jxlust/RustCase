@@ -52,21 +52,25 @@ impl World {
     pub fn new(width: usize, idx: usize) -> World {
         let size = width * width;
         let snake = Snake::new(idx, 3);
-        let mut food_cell;
-        //food may be appear on snakes, then loop fix it
-        loop {
-            food_cell = rng(size);
-            if !snake.body.contains(&SnakeCell(food_cell)) {
-                break;
-            }
-        }
+
         World {
             width,
             size,
+            food_cell: World::gen_food_cell(size, &snake.body),
             snake,
             next_cell: None,
-            food_cell,
         }
+    }
+    fn gen_food_cell(max: usize, body: &Vec<SnakeCell>) -> usize {
+        let mut food_cell;
+        //food may be appear on snakes, then loop fix it
+        loop {
+            food_cell = rng(max);
+            if !body.contains(&SnakeCell(food_cell)) {
+                break;
+            }
+        }
+        food_cell
     }
 
     pub fn width(&self) -> usize {
@@ -141,6 +145,8 @@ impl World {
             // x < 0 < 1 < 2 the last is not important
             //长度+1，push进去的cell理论上在蛇内部的数值就行，只是为了新增一个长度
             self.snake.body.push(SnakeCell(self.snake.body[1].0));
+            //update food cell
+            self.food_cell = World::gen_food_cell(self.size, &self.snake.body);
         }
 
         let len = self.snake_length();
