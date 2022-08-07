@@ -89,17 +89,18 @@ function drawWorld() {
   ctx.globalAlpha = 0.2;
   ctx.fillRect(0, 0, myCanvas.width, myCanvas.height);
 }
-function rng(n: number) {
-  return (Math.random() * n) | 0;
+function rng(n: number, start: number = 0) {
+  return start + ((Math.random() * n) | 0);
 }
 
 function randomFillCell() {
+  let randomCount = rng(3,8);
   while (true) {
     let rIndex = rng(CELL_SIZE);
     if (!randomList.includes(rIndex) && rIndex !== animalIdx) {
       randomList.push(rIndex);
     }
-    if (randomList.length === RANDOM_COUNT) {
+    if (randomList.length === randomCount) {
       break;
     }
   }
@@ -419,13 +420,14 @@ myCanvas.addEventListener("click", (e) => {
   }
 });
 function randomFirstIdx() {
-  while (true) {
-    let idx = rng(CELL_SIZE);
-    if (!checkIsOnWallEdge(idx)) {
-      animalIdx = idx;
-      break;
-    }
-  }
+  // while (true) {
+  //   let idx = rng(CELL_SIZE);
+  //   if (!checkIsOnWallEdge(idx)) {
+  //     animalIdx = idx;
+  //     break;
+  //   }
+  // }
+  animalIdx = (CELL_SIZE / 2) | 0;
 }
 async function init() {
   randomFirstIdx();
