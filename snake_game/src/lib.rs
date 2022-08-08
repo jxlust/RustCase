@@ -54,6 +54,7 @@ pub struct World {
     next_cell: Option<SnakeCell>,
     food_cell: Option<usize>, //Option handle when the food_cell is None
     status: Option<GameStatus>,
+    points: usize,
 }
 #[wasm_bindgen]
 impl World {
@@ -68,6 +69,7 @@ impl World {
             snake,
             next_cell: None,
             status: None,
+            points: 0,
         }
     }
     fn gen_food_cell(max: usize, body: &Vec<SnakeCell>) -> Option<usize> {
@@ -80,6 +82,10 @@ impl World {
             }
         }
         Some(food_cell)
+    }
+
+    pub fn points(&self) -> usize {
+        self.points
     }
 
     pub fn width(&self) -> usize {
@@ -176,12 +182,8 @@ impl World {
 
                 //todo: eat food
                 if Some(self.snake_header()) == self.food_cell {
-                    //length+1,push a cell,cell in snake
-                    //eg: 0 < 1 < 2 < 1
-                    // x < 0 < 1 < 2 the last is not important
-                    //长度+1，push进去的cell理论上在蛇内部的数值就行，只是为了新增一个长度
-                    self.snake.body.push(SnakeCell(self.snake.body[1].0));
                     if self.snake_length() < self.size {
+                        self.points += 1;
                         //update food cell
                         self.food_cell = World::gen_food_cell(self.size, &self.snake.body);
                     } else {
@@ -189,6 +191,12 @@ impl World {
                         self.status = Some(GameStatus::Won);
                         // self.food_cell = self.size + 10;
                     }
+
+                    //length+1,push a cell,cell in snake
+                    //eg: 0 < 1 < 2 < 1
+                    // x < 0 < 1 < 2 the last is not important
+                    //长度+1，push进去的cell理论上在蛇内部的数值就行，只是为了新增一个长度
+                    self.snake.body.push(SnakeCell(self.snake.body[1].0));
                 }
             }
             //else to do nothing
