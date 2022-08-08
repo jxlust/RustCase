@@ -52,7 +52,7 @@ pub struct World {
     snake: Snake,
     size: usize,
     next_cell: Option<SnakeCell>,
-    food_cell: usize,
+    food_cell: Option<usize>, //Option handle when the food_cell is None
     status: Option<GameStatus>,
 }
 #[wasm_bindgen]
@@ -70,7 +70,7 @@ impl World {
             status: None,
         }
     }
-    fn gen_food_cell(max: usize, body: &Vec<SnakeCell>) -> usize {
+    fn gen_food_cell(max: usize, body: &Vec<SnakeCell>) -> Option<usize> {
         let mut food_cell;
         //food may be appear on snakes, then loop fix it
         loop {
@@ -79,16 +79,27 @@ impl World {
                 break;
             }
         }
-        food_cell
+        Some(food_cell)
     }
 
     pub fn width(&self) -> usize {
         self.width
     }
+
     pub fn game_status(&self) -> Option<GameStatus> {
         self.status
     }
-    pub fn food_cell(&self) -> usize {
+
+    pub fn game_status_text(&self) -> String {
+        match self.status {
+            Some(GameStatus::Won) => String::from("You win!"),
+            Some(GameStatus::Lost) => String::from("You Lost!"),
+            Some(GameStatus::Played) => String::from("Playing..."),
+            None => String::from("Game not start!"),
+        }
+    }
+
+    pub fn food_cell(&self) -> Option<usize> {
         self.food_cell
     }
 
@@ -154,25 +165,30 @@ impl World {
                         self.snake.body[0] = self.gen_next_cell(&self.snake.direction);
                     }
                 }
-                //todo: eat food
-                if self.snake_header() == self.food_cell {
-                    if self.snake_length() < self.size {
-                        //length+1,push a cell,cell in snake
-                        //eg: 0 < 1 < 2 < 1
-                        // x < 0 < 1 < 2 the last is not important
-                        //长度+1，push进去的cell理论上在蛇内部的数值就行，只是为了新增一个长度
-                        self.snake.body.push(SnakeCell(self.snake.body[1].0));
-                        //update food cell
-                        self.food_cell = World::gen_food_cell(self.size, &self.snake.body);
-                    } else {
-                        self.food_cell = 1000; //test
-                                               // self.food_cell = self.size + 10;
-                    }
-                }
 
                 let len = self.snake_length();
                 for i in 1..len {
                     self.snake.body[i] = SnakeCell(temp[i - 1].0);
+                }
+                if self.snake.body[1..len].contains(&self.snake.body[0]) {
+                    self.status = Some(GameStatus::Lost);
+                }
+
+                //todo: eat food
+                if Some(self.snake_header()) == self.food_cell {
+                    //length+1,push a cell,cell in snake
+                    //eg: 0 < 1 < 2 < 1
+                    // x < 0 < 1 < 2 the last is not important
+                    //长度+1，push进去的cell理论上在蛇内部的数值就行，只是为了新增一个长度
+                    self.snake.body.push(SnakeCell(self.snake.body[1].0));
+                    if self.snake_length() < self.size {
+                        //update food cell
+                        self.food_cell = World::gen_food_cell(self.size, &self.snake.body);
+                    } else {
+                        self.food_cell = None; //test
+                        self.status = Some(GameStatus::Won);
+                        // self.food_cell = self.size + 10;
+                    }
                 }
             }
             //else to do nothing

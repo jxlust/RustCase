@@ -1,8 +1,8 @@
 import init, { World, Direction } from "snake_game";
 import { rng } from "./utils/rng";
 init().then((wasm) => {
-  const INTERVAL_TIME = 1000 / 4;
-  const WORLD_WIDTH = 15;
+  const INTERVAL_TIME = 1000 / 5;
+  const WORLD_WIDTH = 4;
   const CELL_SIZE = 20; //cell size 10
 
   // const snakeSpawnIndex = Date.now() % (WORLD_WIDTH * WORLD_WIDTH);
@@ -12,6 +12,7 @@ init().then((wasm) => {
   const worldWidth = world.width();
 
   const playIdDom = document.getElementById("playId");
+  const statusIdDom = document.getElementById("statusId");
 
   const canvas = <HTMLCanvasElement>document.getElementById("snake-canvas");
   canvas.width = CELL_SIZE * worldWidth;
@@ -39,7 +40,7 @@ init().then((wasm) => {
 
   playIdDom.addEventListener("click", (_) => {
     let gameStatus = world.game_status();
-    if (!gameStatus) {
+    if (gameStatus === undefined) {
       world.start_game();
       loopStart();
 
@@ -77,14 +78,22 @@ init().then((wasm) => {
     ); //usize = 4 bytes  = 4 * 8
     // debugger;
     // const snakeIndex = world.snake_header();
-    snakeCells.forEach((cellIdx, i) => {
-      let color = i === 0 ? "#a8f8f8" : "#000000";
-      ctxFillCell(cellIdx, color);
-    });
 
-    //fill header again
-    let headerIndex = snakeCells[0];
-    ctxFillCell(headerIndex, "#a8f8f8");
+    //way1: filter
+    //way2: slice + reverse
+    snakeCells
+      // .filter((idx, i) => !(i > 0 && idx === snakeCells[0]))
+      .slice()
+      .reverse() //i === snakeCells.length - 1
+      .forEach((cellIdx, i) => {
+        let color = i === snakeCells.length - 1 ? "#a8f8f8" : "#000000";
+        ctxFillCell(cellIdx, color);
+      });
+
+    //way3: fill header again
+    // let headerIndex = snakeCells[0];
+    // ctxFillCell(headerIndex, "#a8f8f8");
+
     world.step();
   }
 
@@ -105,12 +114,18 @@ init().then((wasm) => {
     }
   }
 
+  function drawStatusText() {
+    statusIdDom.textContent = world.game_status_text();
+  }
+
   // debugger;
   function updatedView() {
+    console.log("111upupda vie");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawWorld();
     drawSnake();
     drawFoodCell();
+    drawStatusText();
   }
 
   function loopStart() {
