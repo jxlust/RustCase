@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .snake-wrapper {
+            background-color: #f8f8f8;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            /* width: 500px;
+            height: 500px; */
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-crisp-edges;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+
+        .opt-wrapper {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-text {
+            display: flex;
+            align-items: center;
+        }
+
+        .status-text span {
+            margin: 0 5px;
+        }
+
+        .status-text span:first-of-type {
+            font-weight: bold;
+        }
+
+        #statusId {
+            color: red;
+        }
+
+        #playId {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="snake-wrapper">
+        <canvas id="snake-canvas"></canvas>
+
+
+        <div class="opt-wrapper">
+
+            <div class="status-text"> <span>Status:</span> <span id="statusId">None</span></div>
+            <div class="status-text"> <span>Points:</span> <span id="pointsId"></span></div>
+
+            <button id="playId">play</button>
+        </div>
+
+
+    </div>
+
+    <script src="./bootstrap.js"></script>
+</body>
+
+</html>
