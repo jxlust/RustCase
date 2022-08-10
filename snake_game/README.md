@@ -136,6 +136,6 @@ pub fn change_ptr(&mut self) {
 }
 ```
 
-```js
+## use case
 
-```
+[https://github.com/jxlust/RustCase/blob/main/snake_game/www/index.ts](https://github.com/jxlust/RustCase/blob/main/snake_game/www/index.ts)
