@@ -25,10 +25,9 @@ cargo install wasm-bindgen-cli --version 0.2.82
 
 - cargo install cargo-generate
 
-- pkg
+- pkg, package.json
 
 ```json
-//package.json
 {
   "name": "snake_game",
   "version": "0.1.0",
@@ -40,7 +39,6 @@ cargo install wasm-bindgen-cli --version 0.2.82
 ```
 
 ```json
-//other use
 "dependencies": {
     "snake_game": "file:../pkg"
 }
@@ -109,7 +107,9 @@ if self.snake.direction == Direction::Down {
     self.snake.body[0].0 = next_row * self.width + col;
 }
 ```
+
 refactor 重构：
+
 ```rust
 pub fn update(&mut self) {
     let snake_index = self.snake_header();
