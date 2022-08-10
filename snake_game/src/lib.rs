@@ -35,8 +35,11 @@ pub struct Snake {
 }
 // [10,9,8] 3 length
 impl Snake {
-    fn new(spawn_index: usize, length: usize) -> Snake {
+    fn new(mut spawn_index: usize, length: usize) -> Snake {
         let mut body = vec![];
+        if spawn_index < length {
+            spawn_index = length - 1;
+        }
         for i in 0..length {
             body.push(SnakeCell(spawn_index - i))
         }

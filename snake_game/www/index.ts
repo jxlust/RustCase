@@ -1,8 +1,8 @@
 import init, { World, Direction, GameStatus } from "snake_game";
 import { rng } from "./utils/rng";
 init().then((wasm) => {
-  const INTERVAL_TIME = 1000 / 2;
-  const WORLD_WIDTH = 3;
+  const INTERVAL_TIME = 1000 / 4;
+  const WORLD_WIDTH = 2;
   const CELL_SIZE = 20; //cell size 10
 
   // const snakeSpawnIndex = Date.now() % (WORLD_WIDTH * WORLD_WIDTH);
@@ -14,6 +14,8 @@ init().then((wasm) => {
   const playIdDom = document.getElementById("playId");
   const statusIdDom = document.getElementById("statusId");
   const pointsIdDom = document.getElementById("pointsId");
+
+  let rafId: number;
 
   const canvas = <HTMLCanvasElement>document.getElementById("snake-canvas");
   canvas.width = CELL_SIZE * worldWidth;
@@ -79,7 +81,7 @@ init().then((wasm) => {
     ); //usize = 4 bytes  = 4 * 8
     // debugger;
     // const snakeIndex = world.snake_header();
-
+    console.log(1, snakeCells);
     //way1: filter
     //way2: slice + reverse
     snakeCells
@@ -109,25 +111,28 @@ init().then((wasm) => {
 
   function drawFoodCell() {
     let foodIndex = world.food_cell();
-    if (foodIndex) {
+    if (foodIndex >= 0) {
       ctxFillCell(foodIndex, "#ff0000");
     }
   }
 
   function drawStatusText() {
-    if (
-      world.game_status() === GameStatus.Won ||
-      world.game_status() === GameStatus.Lost
-    ) {
+    if (isGameEnd()) {
       playIdDom.textContent = "Re-Play";
     }
     statusIdDom.textContent = world.game_status_text();
     pointsIdDom.textContent = world.points().toString();
   }
-
+  function isGameEnd() {
+    return (
+      world.game_status() === GameStatus.Won ||
+      world.game_status() === GameStatus.Lost
+    );
+  }
   // debugger;
   function updatedView() {
-    console.log("111upupda vie");
+    console.log("update view");
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawWorld();
     drawSnake();
@@ -135,19 +140,26 @@ init().then((wasm) => {
     drawStatusText();
   }
 
-  function loopStart() {
-    let startTime: number;
-    function loopCallback(timestamp: number) {
-      if (!startTime) {
-        startTime = timestamp;
-      }
-      let diffTime = timestamp - startTime;
+  let startTime: number;
+
+  function loopCallback(timestamp: number) {
+    if (!startTime) {
+      startTime = timestamp;
+    }
+    let diffTime = timestamp - startTime;
+    if (isGameEnd()) {
+      console.log("end.....", rafId);
+      window.cancelAnimationFrame(rafId);
+    } else {
       if (diffTime >= INTERVAL_TIME || diffTime === 0) {
         startTime = timestamp;
         updatedView();
       }
-      window.requestAnimationFrame(loopCallback);
+      rafId = window.requestAnimationFrame(loopCallback);
     }
+  }
+
+  function loopStart() {
     window.requestAnimationFrame(loopCallback);
   }
 
