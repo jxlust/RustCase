@@ -1,4 +1,4 @@
-import init, { World, Direction, GameStatus } from "snake_game";
+import init, { World, Direction, GameStatus } from "jxlust-snake-game";
 import { rng } from "./utils/rng";
 init().then((wasm) => {
   const INTERVAL_TIME = 1000 / 4;
