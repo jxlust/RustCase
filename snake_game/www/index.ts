@@ -2,7 +2,7 @@ import init, { World, Direction, GameStatus } from "snake_game";
 import { rng } from "./utils/rng";
 init().then((wasm) => {
   const INTERVAL_TIME = 1000 / 4;
-  const WORLD_WIDTH = 2;
+  const WORLD_WIDTH = 16;
   const CELL_SIZE = 20; //cell size 10
 
   // const snakeSpawnIndex = Date.now() % (WORLD_WIDTH * WORLD_WIDTH);
@@ -24,7 +24,7 @@ init().then((wasm) => {
 
   // debugger;
   document.addEventListener("keydown", (e) => {
-    console.log(e.code);
+    // console.log(e.code);
     switch (e.code) {
       case "ArrowUp":
         world.change_snake_dir(Direction.Up);
@@ -81,7 +81,6 @@ init().then((wasm) => {
     ); //usize = 4 bytes  = 4 * 8
     // debugger;
     // const snakeIndex = world.snake_header();
-    console.log(1, snakeCells);
     //way1: filter
     //way2: slice + reverse
     snakeCells
@@ -148,7 +147,6 @@ init().then((wasm) => {
     }
     let diffTime = timestamp - startTime;
     if (isGameEnd()) {
-      console.log("end.....", rafId);
       window.cancelAnimationFrame(rafId);
     } else {
       if (diffTime >= INTERVAL_TIME || diffTime === 0) {
