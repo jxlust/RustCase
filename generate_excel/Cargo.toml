@@ -1,0 +1,11 @@
+[package]
+name = "generate_excel"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+calamine = { version = "0.26.1", features = ["dates"] }
+xlsxwriter = "0.6.1"
+chrono = "0.4.38"
