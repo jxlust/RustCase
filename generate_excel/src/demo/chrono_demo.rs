@@ -1,5 +1,4 @@
 use chrono::{DateTime, Local, NaiveDate, NaiveDateTime, NaiveTime};
-
 fn main() {
     let now = Instant::now();
     let date = NaiveDate::from_ymd_opt(2024, 1, 23);
